@@ -1,0 +1,498 @@
+{% extends "base.html" %}
+{% set active = "model" %}
+
+{% block title %}About the Model | PropertyVal{% endblock %}
+
+{% block extra_head %}
+<style>
+    /* Hero */
+    .page-hero {
+        background: linear-gradient(135deg, #0f2e22 0%, #1a5f4a 60%, #2d8a6e 100%);
+        color: white;
+        padding: 5rem 1.5rem 4rem;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+    .page-hero::before {
+        content: '';
+        position: absolute; inset: 0;
+        background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    .page-hero-content { position: relative; z-index: 1; max-width: 650px; margin: 0 auto; }
+    .page-hero h1 {
+        font-family: 'Syne', sans-serif;
+        font-size: 2.75rem; font-weight: 800;
+        letter-spacing: -0.03em; margin-bottom: 1rem;
+    }
+    .page-hero p { font-size: 1.0625rem; color: rgba(255,255,255,0.75); line-height: 1.75; }
+
+    /* Badges row */
+    .hero-badges {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        justify-content: center;
+        margin-top: 1.75rem;
+    }
+    .hero-badge {
+        display: flex; align-items: center; gap: 0.4rem;
+        background: rgba(255,255,255,0.1);
+        border: 1px solid rgba(255,255,255,0.15);
+        color: rgba(255,255,255,0.9);
+        padding: 0.4rem 0.9rem;
+        border-radius: 8px;
+        font-size: 0.8125rem; font-weight: 500;
+        backdrop-filter: blur(4px);
+    }
+
+    /* Content */
+    .page-body { max-width: 960px; margin: 0 auto; padding: 4rem 1.5rem; }
+
+    .section-label {
+        font-size: 0.7rem; font-weight: 700;
+        text-transform: uppercase; letter-spacing: 0.15em;
+        color: var(--primary); margin-bottom: 0.5rem;
+    }
+    .section-title {
+        font-family: 'Syne', sans-serif;
+        font-size: 1.75rem; font-weight: 700;
+        letter-spacing: -0.02em; margin-bottom: 1.25rem;
+    }
+    .section-body {
+        font-size: 0.9375rem; color: var(--text-secondary);
+        line-height: 1.8; margin-bottom: 2.5rem;
+    }
+    .section-body strong { color: var(--text-primary); }
+
+    hr.divider { border: none; border-top: 1px solid var(--border); margin: 3rem 0; }
+
+    /* Algorithm card */
+    .algo-card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 2rem;
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 1.5rem;
+        align-items: start;
+        margin-bottom: 2rem;
+        transition: box-shadow 0.2s;
+    }
+    .algo-card:hover { box-shadow: var(--shadow); }
+
+    .algo-icon {
+        width: 56px; height: 56px;
+        background: var(--primary);
+        border-radius: 14px;
+        display: flex; align-items: center; justify-content: center;
+        color: white; font-size: 1.4rem;
+        flex-shrink: 0;
+    }
+    .algo-card h3 {
+        font-family: 'Syne', sans-serif;
+        font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem;
+    }
+    .algo-card p { font-size: 0.9rem; color: var(--text-secondary); line-height: 1.7; }
+
+    /* Features grid */
+    .features-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.25rem;
+        margin-bottom: 2.5rem;
+    }
+    .feat-card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 1.5rem;
+        position: relative;
+        overflow: hidden;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .feat-card:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+    .feat-card::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0;
+        width: 3px; height: 100%;
+        background: var(--primary);
+        border-radius: 0 0 0 0;
+    }
+    .feat-num {
+        font-family: 'Syne', sans-serif;
+        font-size: 2rem; font-weight: 800;
+        color: var(--primary-light);
+        line-height: 1;
+        margin-bottom: 0.5rem;
+    }
+    .feat-card h4 { font-size: 0.9375rem; font-weight: 700; margin-bottom: 0.4rem; }
+    .feat-card p { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.65; }
+    .feat-impact {
+        display: inline-flex; align-items: center; gap: 0.3rem;
+        margin-top: 0.75rem;
+        font-size: 0.75rem; font-weight: 600;
+        color: var(--primary);
+        background: var(--primary-light);
+        padding: 0.2rem 0.6rem; border-radius: 5px;
+    }
+
+    /* Pipeline visual */
+    .pipeline {
+        display: flex;
+        align-items: center;
+        gap: 0;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 1.75rem;
+        overflow-x: auto;
+        margin-bottom: 2.5rem;
+    }
+    .pipe-step {
+        flex: 1;
+        min-width: 110px;
+        text-align: center;
+    }
+    .pipe-icon {
+        width: 48px; height: 48px;
+        background: var(--primary-light);
+        border-radius: 12px;
+        display: flex; align-items: center; justify-content: center;
+        margin: 0 auto 0.6rem;
+        color: var(--primary); font-size: 1.1rem;
+        transition: background 0.2s;
+    }
+    .pipe-step:hover .pipe-icon { background: var(--primary); color: white; }
+    .pipe-step h5 { font-size: 0.75rem; font-weight: 600; color: var(--text-primary); margin-bottom: 0.2rem; }
+    .pipe-step p { font-size: 0.7rem; color: var(--text-secondary); }
+    .pipe-arrow {
+        color: var(--border);
+        font-size: 1.4rem;
+        padding: 0 0.5rem;
+        flex-shrink: 0;
+    }
+
+    /* Metrics */
+    .metrics-row {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.25rem;
+        margin-bottom: 2.5rem;
+    }
+    .metric-card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 1.5rem;
+        text-align: center;
+    }
+    .metric-card .metric-val {
+        font-family: 'Syne', sans-serif;
+        font-size: 2rem; font-weight: 800;
+        color: var(--primary); line-height: 1;
+        margin-bottom: 0.4rem;
+    }
+    .metric-card .metric-label {
+        font-size: 0.8rem; font-weight: 600;
+        color: var(--text-secondary);
+        text-transform: uppercase; letter-spacing: 0.05em;
+    }
+    .metric-card .metric-desc {
+        font-size: 0.78rem; color: var(--text-secondary);
+        margin-top: 0.4rem; line-height: 1.5;
+    }
+
+    /* Limitations */
+    .limitations {
+        background: #fffbeb;
+        border: 1px solid #fde68a;
+        border-radius: 14px;
+        padding: 1.75rem;
+        margin-bottom: 2.5rem;
+    }
+    .limitations h3 {
+        font-family: 'Syne', sans-serif;
+        font-size: 1rem; font-weight: 700;
+        color: #92400e; margin-bottom: 1rem;
+        display: flex; align-items: center; gap: 0.5rem;
+    }
+    .limitations ul { list-style: none; display: flex; flex-direction: column; gap: 0.65rem; }
+    .limitations ul li {
+        font-size: 0.875rem; color: #78350f;
+        padding-left: 1.5rem; position: relative; line-height: 1.6;
+    }
+    .limitations ul li::before {
+        content: '⚠';
+        position: absolute; left: 0;
+        font-size: 0.75rem;
+    }
+
+    /* Tech stack */
+    .tech-pills {
+        display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1rem;
+    }
+    .tech-pill {
+        display: flex; align-items: center; gap: 0.4rem;
+        background: var(--card);
+        border: 1px solid var(--border);
+        padding: 0.45rem 0.9rem;
+        border-radius: 8px;
+        font-size: 0.8125rem; font-weight: 500;
+        color: var(--text-primary);
+        transition: border-color 0.2s, color 0.2s;
+    }
+    .tech-pill:hover { border-color: var(--primary); color: var(--primary); }
+
+    /* CTA */
+    .cta-banner {
+        background: linear-gradient(135deg, #1a5f4a, #2d8a6e);
+        border-radius: 16px; padding: 2.5rem;
+        text-align: center; color: white;
+    }
+    .cta-banner h2 {
+        font-family: 'Syne', sans-serif;
+        font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem;
+    }
+    .cta-banner p { font-size: 0.9375rem; color: rgba(255,255,255,0.75); margin-bottom: 1.5rem; }
+    .cta-btn {
+        display: inline-flex; align-items: center; gap: 0.5rem;
+        background: white; color: var(--primary);
+        padding: 0.75rem 1.75rem; border-radius: 10px;
+        text-decoration: none; font-weight: 700; font-size: 0.9375rem;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .cta-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.2); }
+
+    @media (max-width: 768px) {
+        .page-hero h1 { font-size: 2rem; }
+        .features-grid { grid-template-columns: 1fr; }
+        .metrics-row { grid-template-columns: 1fr; }
+        .algo-card { grid-template-columns: 1fr; }
+        .pipeline { gap: 0.5rem; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- Hero -->
+<div class="page-hero">
+    <div class="page-hero-content">
+        <h1>About the Model</h1>
+        <p>A deep-dive into the machine learning model that powers PropertyVal's house price predictions — what it is, how it was built, and what makes it tick.</p>
+        <div class="hero-badges">
+            <div class="hero-badge"><iconify-icon icon="ph:brain" width="14"></iconify-icon> Regression Model</div>
+            <div class="hero-badge"><iconify-icon icon="ph:table" width="14"></iconify-icon> 4 Input Features</div>
+            <div class="hero-badge"><iconify-icon icon="ph:package" width="14"></iconify-icon> Scikit-learn + Joblib</div>
+            <div class="hero-badge"><iconify-icon icon="ph:currency-ngn" width="14"></iconify-icon> Naira Price Output</div>
+        </div>
+    </div>
+</div>
+
+<div class="page-body">
+
+    <!-- Overview -->
+    <p class="section-label">Overview</p>
+    <h2 class="section-title">What Kind of Model Is This?</h2>
+    <p class="section-body">
+        PropertyVal uses a <strong>supervised machine learning regression model</strong> — a class of algorithms that learns the relationship between a set of input features and a continuous numerical target (in this case, house price in Naira). During training, the model is shown thousands of examples of real property records paired with their known prices. It learns the mathematical patterns that link features like <strong>area, number of bedrooms, bathrooms, and age</strong> to market value.
+    </p>
+    <p class="section-body">
+        Once trained, the model is serialised (saved) to a <code style="background:var(--primary-light);color:var(--primary);padding:2px 6px;border-radius:4px;font-size:0.85em;">house_price_model.pkl</code> file using <strong>joblib</strong>, Python's efficient binary serialisation library. When the Flask server starts up, it loads this file into memory once — so every prediction request is instant, with no re-training required.
+    </p>
+
+    <!-- Algorithm candidates -->
+    <hr class="divider">
+    <p class="section-label">Algorithm</p>
+    <h2 class="section-title">The Regression Algorithm</h2>
+    <p class="section-body">
+        House price prediction is a classic regression problem. The model powering PropertyVal belongs to one of these well-established families of regression algorithms — each with its own philosophy for learning from data:
+    </p>
+
+    <div class="algo-card">
+        <div class="algo-icon">
+            <iconify-icon icon="ph:chart-line-up" width="24"></iconify-icon>
+        </div>
+        <div>
+            <h3>Linear / Ridge Regression</h3>
+            <p>The simplest regression approach. The model fits a straight-line (hyperplane in 4D) through the training data, assigning a learned weight to each feature. For example: <em>"every additional 100 sq ft adds approximately ₦X to the price."</em> This model is fast, fully interpretable, and works extremely well when the relationships between features and price are roughly linear. Ridge regression adds a regularisation penalty to prevent overfitting when features are correlated.</p>
+        </div>
+    </div>
+
+    <div class="algo-card">
+        <div class="algo-icon">
+            <iconify-icon icon="ph:tree-structure" width="24"></iconify-icon>
+        </div>
+        <div>
+            <h3>Random Forest Regressor</h3>
+            <p>An <strong>ensemble method</strong> that builds hundreds of decision trees, each trained on a random subset of the data and features. Their predictions are averaged to produce a final estimate. Random Forests naturally capture non-linear relationships — for example, the price drop caused by old age may slow down after a certain point — and are robust to outliers. This is one of the most popular choices for real-estate prediction tasks due to its excellent accuracy-to-simplicity ratio.</p>
+        </div>
+    </div>
+
+    <div class="algo-card">
+        <div class="algo-icon">
+            <iconify-icon icon="ph:rocket-launch" width="24"></iconify-icon>
+        </div>
+        <div>
+            <h3>Gradient Boosting Regressor</h3>
+            <p>Another powerful ensemble method that builds trees <strong>sequentially</strong> — each new tree learns to correct the errors made by the previous ones. Implementations like XGBoost, LightGBM, or scikit-learn's GradientBoostingRegressor often achieve state-of-the-art accuracy on tabular data like property datasets. They handle complex feature interactions automatically and tend to generalise well with proper hyperparameter tuning.</p>
+        </div>
+    </div>
+
+    <!-- Training pipeline -->
+    <hr class="divider">
+    <p class="section-label">Training Pipeline</p>
+    <h2 class="section-title">How the Model Was Built</h2>
+    <p class="section-body">
+        Before the model can make any prediction, it goes through a structured training pipeline. This is a one-time process — the resulting trained model is then frozen and deployed to serve live predictions.
+    </p>
+
+    <div class="pipeline">
+        <div class="pipe-step">
+            <div class="pipe-icon"><iconify-icon icon="ph:database" width="22"></iconify-icon></div>
+            <h5>Raw Dataset</h5>
+            <p>Property records with known prices</p>
+        </div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-step">
+            <div class="pipe-icon"><iconify-icon icon="ph:funnel" width="22"></iconify-icon></div>
+            <h5>Data Cleaning</h5>
+            <p>Remove nulls, outliers, bad entries</p>
+        </div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-step">
+            <div class="pipe-icon"><iconify-icon icon="ph:sliders" width="22"></iconify-icon></div>
+            <h5>Feature Engineering</h5>
+            <p>Select & transform the 4 inputs</p>
+        </div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-step">
+            <div class="pipe-icon"><iconify-icon icon="ph:brain" width="22"></iconify-icon></div>
+            <h5>Model Training</h5>
+            <p>Fit algorithm on training split</p>
+        </div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-step">
+            <div class="pipe-icon"><iconify-icon icon="ph:check-square" width="22"></iconify-icon></div>
+            <h5>Evaluation</h5>
+            <p>Test on unseen data</p>
+        </div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-step">
+            <div class="pipe-icon"><iconify-icon icon="ph:package" width="22"></iconify-icon></div>
+            <h5>Serialisation</h5>
+            <p>Saved as .pkl via joblib</p>
+        </div>
+    </div>
+
+    <!-- Input Features -->
+    <hr class="divider">
+    <p class="section-label">Input Features</p>
+    <h2 class="section-title">What the Model Learns From</h2>
+    <p class="section-body">
+        The model uses exactly <strong>4 numerical features</strong> — chosen because they are the most consistently available and most predictive signals for residential property valuation. Each feature contributes to the prediction in a different way.
+    </p>
+
+    <div class="features-grid">
+        <div class="feat-card">
+            <div class="feat-num">01</div>
+            <h4>Area (sq ft)</h4>
+            <p>The total living area of the property. This is typically the single strongest predictor of price — larger properties command higher values in virtually every market. The model learns the price-per-square-foot relationship from the training data, which naturally varies across property sizes.</p>
+            <span class="feat-impact"><iconify-icon icon="ph:arrow-up" width="12"></iconify-icon> Highest Impact</span>
+        </div>
+
+        <div class="feat-card">
+            <div class="feat-num">02</div>
+            <h4>Bedrooms</h4>
+            <p>The number of bedrooms directly signals a property's capacity and intended use. More bedrooms generally mean higher prices, though the relationship is non-linear — the jump from 1 to 2 bedrooms matters more than the jump from 5 to 6. The model learns these nuances from training examples.</p>
+            <span class="feat-impact"><iconify-icon icon="ph:arrow-up-right" width="12"></iconify-icon> High Impact</span>
+        </div>
+
+        <div class="feat-card">
+            <div class="feat-num">03</div>
+            <h4>Bathrooms</h4>
+            <p>Bathroom count is a strong proxy for overall property quality and luxury tier. More bathrooms — including half-baths (0.5) — indicate a more complete and comfortable property. The model supports 0.5 increments, allowing it to distinguish between full bathrooms and powder rooms.</p>
+            <span class="feat-impact"><iconify-icon icon="ph:arrow-up-right" width="12"></iconify-icon> Medium-High Impact</span>
+        </div>
+
+        <div class="feat-card">
+            <div class="feat-num">04</div>
+            <h4>Age of House (years)</h4>
+            <p>The age of a property affects its value in complex ways. Newer properties tend to have modern finishes, better energy efficiency, and fewer maintenance needs — all of which support higher prices. However, very old properties can also command premiums if they have historical or architectural significance. The model learns this curved relationship from data.</p>
+            <span class="feat-impact"><iconify-icon icon="ph:arrow-down-right" width="12"></iconify-icon> Moderate Impact</span>
+        </div>
+    </div>
+
+    <!-- Metrics -->
+    <hr class="divider">
+    <p class="section-label">Performance</p>
+    <h2 class="section-title">How Accuracy Is Measured</h2>
+    <p class="section-body">
+        Regression models are evaluated using standard statistical metrics computed on a <strong>held-out test set</strong> — data the model never saw during training. These metrics measure the gap between the model's predicted prices and the actual recorded prices.
+    </p>
+
+    <div class="metrics-row">
+        <div class="metric-card">
+            <div class="metric-val">R²</div>
+            <div class="metric-label">R-Squared Score</div>
+            <p class="metric-desc">Measures how much of the price variance the model explains. A score of 1.0 is perfect; 0.85+ is considered strong for real-estate data.</p>
+        </div>
+        <div class="metric-card">
+            <div class="metric-val">MAE</div>
+            <div class="metric-label">Mean Absolute Error</div>
+            <p class="metric-desc">The average absolute difference between predicted and actual price. Lower is better — tells you the typical prediction error in Naira.</p>
+        </div>
+        <div class="metric-card">
+            <div class="metric-val">RMSE</div>
+            <div class="metric-label">Root Mean Sq. Error</div>
+            <p class="metric-desc">Like MAE but penalises large errors more heavily. Useful for detecting cases where the model occasionally makes very large mistakes.</p>
+        </div>
+    </div>
+
+    <!-- Limitations -->
+    <div class="limitations">
+        <h3><iconify-icon icon="ph:warning" width="18"></iconify-icon> Important Limitations to Know</h3>
+        <ul>
+            <li>The model only knows what it learned from its training data. Properties in locations not represented in the training set may be estimated less accurately.</li>
+            <li>Only 4 features are used. Real-world prices are also affected by location, neighbourhood, proximity to amenities, market timing, and renovation quality — none of which are captured here.</li>
+            <li>The model produces a <strong>point estimate</strong>, not a range. Treat the output as a reference figure, not a guaranteed valuation.</li>
+            <li>Market prices change over time. The model reflects the price patterns present in its training data and may drift from current market conditions if not periodically retrained.</li>
+            <li>Extreme outliers (e.g., very large estates or distressed properties) may fall outside the model's reliable prediction range.</li>
+        </ul>
+    </div>
+
+    <!-- Tech Stack -->
+    <hr class="divider">
+    <p class="section-label">Technology</p>
+    <h2 class="section-title">Built With</h2>
+    <p class="section-body">
+        PropertyVal is built entirely with open-source Python tools — the same stack used by data scientists and ML engineers across the industry.
+    </p>
+    <div class="tech-pills">
+        <span class="tech-pill"><iconify-icon icon="ph:snake-logo" width="16"></iconify-icon> Python 3</span>
+        <span class="tech-pill"><iconify-icon icon="ph:flask" width="16"></iconify-icon> Flask</span>
+        <span class="tech-pill"><iconify-icon icon="ph:brain" width="16"></iconify-icon> Scikit-learn</span>
+        <span class="tech-pill"><iconify-icon icon="ph:math-operations" width="16"></iconify-icon> NumPy</span>
+        <span class="tech-pill"><iconify-icon icon="ph:table" width="16"></iconify-icon> Pandas</span>
+        <span class="tech-pill"><iconify-icon icon="ph:package" width="16"></iconify-icon> Joblib</span>
+        <span class="tech-pill"><iconify-icon icon="ph:code" width="16"></iconify-icon> Jinja2</span>
+        <span class="tech-pill"><iconify-icon icon="ph:browsers" width="16"></iconify-icon> HTML / CSS / JS</span>
+    </div>
+
+    <hr class="divider">
+
+    <!-- CTA -->
+    <div class="cta-banner">
+        <h2>See the Model in Action</h2>
+        <p>Now that you understand the model, try it with a real property and get an instant AI-powered estimate.</p>
+        <a href="/" class="cta-btn">
+            <iconify-icon icon="ph:house" width="18"></iconify-icon>
+            Try the Predictor
+        </a>
+    </div>
+
+</div>
+{% endblock %}

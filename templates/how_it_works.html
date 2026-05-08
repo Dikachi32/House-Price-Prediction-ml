@@ -1,0 +1,413 @@
+{% extends "base.html" %}
+{% set active = "how" %}
+
+{% block title %}How It Works | PropertyVal{% endblock %}
+
+{% block extra_head %}
+<style>
+    /* Hero */
+    .page-hero {
+        background: linear-gradient(135deg, #0f2e22 0%, #1a5f4a 60%, #2d8a6e 100%);
+        color: white;
+        padding: 5rem 1.5rem 4rem;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+    .page-hero::before {
+        content: '';
+        position: absolute; inset: 0;
+        background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    .page-hero-content { position: relative; z-index: 1; max-width: 650px; margin: 0 auto; }
+    .page-hero h1 {
+        font-family: 'Syne', sans-serif;
+        font-size: 2.75rem; font-weight: 800;
+        letter-spacing: -0.03em;
+        margin-bottom: 1rem;
+    }
+    .page-hero p {
+        font-size: 1.0625rem;
+        color: rgba(255,255,255,0.75);
+        line-height: 1.75;
+    }
+
+    /* Content */
+    .page-body {
+        max-width: 960px;
+        margin: 0 auto;
+        padding: 4rem 1.5rem;
+    }
+
+    /* Steps */
+    .steps-section { margin-bottom: 4.5rem; }
+
+    .section-label {
+        font-size: 0.7rem; font-weight: 700;
+        text-transform: uppercase; letter-spacing: 0.15em;
+        color: var(--primary); margin-bottom: 0.5rem;
+    }
+    .section-title {
+        font-family: 'Syne', sans-serif;
+        font-size: 1.75rem; font-weight: 700;
+        letter-spacing: -0.02em; margin-bottom: 3rem;
+    }
+
+    .steps { display: flex; flex-direction: column; gap: 0; }
+
+    .step {
+        display: grid;
+        grid-template-columns: 64px 1fr;
+        gap: 1.5rem;
+        position: relative;
+    }
+
+    .step:not(:last-child)::after {
+        content: '';
+        position: absolute;
+        left: 31px;
+        top: 64px;
+        bottom: -1px;
+        width: 2px;
+        background: linear-gradient(to bottom, var(--primary-light), transparent);
+    }
+
+    .step-num-col {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .step-num {
+        width: 64px; height: 64px;
+        border-radius: 16px;
+        background: var(--primary);
+        color: white;
+        font-family: 'Syne', sans-serif;
+        font-size: 1.4rem; font-weight: 800;
+        display: flex; align-items: center; justify-content: center;
+        flex-shrink: 0;
+        box-shadow: 0 4px 16px rgba(26,95,74,0.3);
+        transition: transform 0.2s;
+    }
+
+    .step:hover .step-num { transform: scale(1.06); }
+
+    .step-body {
+        padding-bottom: 3rem;
+    }
+
+    .step-body h3 {
+        font-family: 'Syne', sans-serif;
+        font-size: 1.125rem; font-weight: 700;
+        margin-bottom: 0.6rem;
+        margin-top: 1rem;
+    }
+    .step-body p {
+        font-size: 0.9375rem;
+        color: var(--text-secondary);
+        line-height: 1.75;
+        margin-bottom: 0.75rem;
+    }
+
+    .step-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        background: var(--primary-light);
+        color: var(--primary);
+        padding: 0.3rem 0.75rem;
+        border-radius: 6px;
+        font-size: 0.75rem; font-weight: 600;
+        margin-top: 0.25rem;
+    }
+
+    /* Input Table */
+    .input-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 1rem;
+        font-size: 0.875rem;
+    }
+    .input-table th {
+        background: var(--primary-light);
+        color: var(--primary);
+        font-weight: 600;
+        padding: 0.75rem 1rem;
+        text-align: left;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+    .input-table td {
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid var(--border);
+        color: var(--text-secondary);
+    }
+    .input-table tr:last-child td { border-bottom: none; }
+    .input-table tr:hover td { background: var(--bg); }
+    .input-table-wrap {
+        border-radius: 12px;
+        overflow: hidden;
+        border: 1px solid var(--border);
+    }
+
+    /* Code block */
+    .code-block {
+        background: #0f2e22;
+        color: #7dcea9;
+        border-radius: 12px;
+        padding: 1.25rem 1.5rem;
+        font-family: 'Courier New', monospace;
+        font-size: 0.8375rem;
+        line-height: 1.7;
+        margin-top: 1rem;
+        overflow-x: auto;
+    }
+    .code-block .kw { color: #f0c040; }
+    .code-block .str { color: #a8e6cf; }
+    .code-block .cm { color: #4d7a6a; font-style: italic; }
+    .code-block .fn { color: #79c7e3; }
+
+    /* Info Cards */
+    .info-cards {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 1.25rem;
+        margin-bottom: 4rem;
+    }
+    .info-card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 1.5rem;
+        transition: box-shadow 0.2s, transform 0.2s;
+    }
+    .info-card:hover {
+        box-shadow: var(--shadow);
+        transform: translateY(-2px);
+    }
+    .info-card-icon {
+        width: 44px; height: 44px;
+        background: var(--primary-light);
+        border-radius: 12px;
+        display: flex; align-items: center; justify-content: center;
+        margin-bottom: 1rem;
+        font-size: 1.25rem;
+        color: var(--primary);
+    }
+    .info-card h3 {
+        font-family: 'Syne', sans-serif;
+        font-size: 0.9375rem; font-weight: 700; margin-bottom: 0.4rem;
+    }
+    .info-card p { font-size: 0.8375rem; color: var(--text-secondary); line-height: 1.6; }
+
+    /* CTA */
+    .cta-banner {
+        background: linear-gradient(135deg, #1a5f4a, #2d8a6e);
+        border-radius: 16px;
+        padding: 2.5rem;
+        text-align: center;
+        color: white;
+    }
+    .cta-banner h2 {
+        font-family: 'Syne', sans-serif;
+        font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem;
+    }
+    .cta-banner p { font-size: 0.9375rem; color: rgba(255,255,255,0.75); margin-bottom: 1.5rem; }
+    .cta-btn {
+        display: inline-flex; align-items: center; gap: 0.5rem;
+        background: white; color: var(--primary);
+        padding: 0.75rem 1.75rem;
+        border-radius: 10px; text-decoration: none;
+        font-weight: 700; font-size: 0.9375rem;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .cta-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.2); }
+
+    @media (max-width: 768px) {
+        .page-hero h1 { font-size: 2rem; }
+        .info-cards { grid-template-columns: 1fr; }
+        .step { grid-template-columns: 48px 1fr; }
+        .step-num { width: 48px; height: 48px; font-size: 1.1rem; border-radius: 12px; }
+        .step:not(:last-child)::after { left: 23px; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- Hero -->
+<div class="page-hero">
+    <div class="page-hero-content">
+        <h1>How It Works</h1>
+        <p>PropertyVal turns four simple inputs into a data-driven house price estimate — here's the step-by-step journey from form to prediction.</p>
+    </div>
+</div>
+
+<div class="page-body">
+
+    <!-- Highlights -->
+    <div class="info-cards">
+        <div class="info-card">
+            <div class="info-card-icon">
+                <iconify-icon icon="ph:lightning" width="22"></iconify-icon>
+            </div>
+            <h3>Under 2 Seconds</h3>
+            <p>The entire pipeline — from your click to the displayed price — completes in milliseconds.</p>
+        </div>
+        <div class="info-card">
+            <div class="info-card-icon">
+                <iconify-icon icon="ph:lock-key" width="22"></iconify-icon>
+            </div>
+            <h3>No Data Stored</h3>
+            <p>Your property details are used only for the current prediction and are never saved to any database.</p>
+        </div>
+        <div class="info-card">
+            <div class="info-card-icon">
+                <iconify-icon icon="ph:brain" width="22"></iconify-icon>
+            </div>
+            <h3>ML-Powered</h3>
+            <p>A trained machine learning regression model powers every estimate — not simple averages or lookup tables.</p>
+        </div>
+    </div>
+
+    <!-- Steps -->
+    <div class="steps-section">
+        <p class="section-label">Step by Step</p>
+        <h2 class="section-title">The Prediction Pipeline</h2>
+
+        <div class="steps">
+
+            <!-- Step 1 -->
+            <div class="step">
+                <div class="step-num-col">
+                    <div class="step-num">1</div>
+                </div>
+                <div class="step-body">
+                    <h3>You Fill in the Property Form</h3>
+                    <p>On the home page, you enter four key details about the property you want to value. These four values are the exact features the model was trained on, so every field matters.</p>
+                    <div class="input-table-wrap">
+                        <table class="input-table">
+                            <thead>
+                                <tr>
+                                    <th>Field</th>
+                                    <th>What to Enter</th>
+                                    <th>Unit</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td><strong>Area</strong></td><td>Total living space of the property</td><td>Square feet</td></tr>
+                                <tr><td><strong>Bedrooms</strong></td><td>Number of bedroom spaces</td><td>Count (integer)</td></tr>
+                                <tr><td><strong>Bathrooms</strong></td><td>Number of bathroom spaces</td><td>Count (0.5 increments allowed)</td></tr>
+                                <tr><td><strong>Age</strong></td><td>How many years since the property was built</td><td>Years</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="step">
+                <div class="step-num-col">
+                    <div class="step-num">2</div>
+                </div>
+                <div class="step-body">
+                    <h3>Your Browser Sends the Data to the Server</h3>
+                    <p>When you click <strong>Predict Price</strong>, the form submits an HTTP POST request to the Flask web server running on the backend. The data travels securely as form-encoded values.</p>
+                    <p>The submit button also enters a loading state, giving you instant visual feedback while the server processes your request.</p>
+                    <span class="step-tag">
+                        <iconify-icon icon="ph:arrow-right" width="14"></iconify-icon>
+                        HTTP POST → Flask Route "/"
+                    </span>
+                </div>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="step">
+                <div class="step-num-col">
+                    <div class="step-num">3</div>
+                </div>
+                <div class="step-body">
+                    <h3>Flask Receives and Validates the Inputs</h3>
+                    <p>The Flask server reads the four form values and converts them to floating-point numbers. A validation check confirms that none of the required fields are empty. If any value is missing, the user is redirected back to the form.</p>
+                    <div class="code-block">
+<span class="cm"># Flask extracts and casts each input</span>
+area      = <span class="fn">float</span>(request.form.<span class="fn">get</span>(<span class="str">"area"</span>))
+bedrooms  = <span class="fn">float</span>(request.form.<span class="fn">get</span>(<span class="str">"bedrooms"</span>))
+bathrooms = <span class="fn">float</span>(request.form.<span class="fn">get</span>(<span class="str">"bathrooms"</span>))
+age       = <span class="fn">float</span>(request.form.<span class="fn">get</span>(<span class="str">"age"</span>))
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 4 -->
+            <div class="step">
+                <div class="step-num-col">
+                    <div class="step-num">4</div>
+                </div>
+                <div class="step-body">
+                    <h3>Data is Formatted into a Feature Array</h3>
+                    <p>The four inputs are arranged into a 2-D NumPy array — a single-row matrix that represents one data point. This shape matches exactly what the model expects, since it was trained on rows of four features.</p>
+                    <div class="code-block">
+<span class="cm"># Shape: [[area, bedrooms, bathrooms, age]]</span>
+our_data = [[area, bedrooms, bathrooms, age]]
+<span class="cm"># e.g.  [[1800.0, 3.0, 2.0, 12.0]]</span>
+                    </div>
+                    <span class="step-tag">
+                        <iconify-icon icon="ph:grid-four" width="14"></iconify-icon>
+                        Feature vector shape: (1, 4)
+                    </span>
+                </div>
+            </div>
+
+            <!-- Step 5 -->
+            <div class="step">
+                <div class="step-num-col">
+                    <div class="step-num">5</div>
+                </div>
+                <div class="step-body">
+                    <h3>The Machine Learning Model Makes Its Prediction</h3>
+                    <p>The pre-trained model (loaded from <code style="background:var(--primary-light);color:var(--primary);padding:2px 6px;border-radius:4px;font-size:0.8rem;">house_price_model.pkl</code> via joblib at server startup) receives the feature array and applies everything it learned during training — feature weights, decision rules, or ensemble logic — to produce a single continuous value: the estimated property price in Naira.</p>
+                    <div class="code-block">
+prediction = model.<span class="fn">predict</span>(our_data)[0]
+prediction = <span class="fn">round</span>(prediction, <span class="str">2</span>)
+<span class="cm"># → e.g. 24500000.00</span>
+                    </div>
+                    <span class="step-tag">
+                        <iconify-icon icon="ph:brain" width="14"></iconify-icon>
+                        Scikit-learn Regressor → Single float output
+                    </span>
+                </div>
+            </div>
+
+            <!-- Step 6 -->
+            <div class="step">
+                <div class="step-num-col">
+                    <div class="step-num">6</div>
+                </div>
+                <div class="step-body">
+                    <h3>The Result is Rendered Back to You</h3>
+                    <p>Flask passes the prediction value to the Jinja2 HTML template, which formats it with the Naira symbol (₦) and comma separators for easy reading. The result appears below the form with a smooth slide-up animation — your estimated market value, delivered in seconds.</p>
+                    <span class="step-tag">
+                        <iconify-icon icon="ph:check-circle" width="14"></iconify-icon>
+                        Jinja2 template renders → ₦24,500,000.00
+                    </span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="cta-banner">
+        <h2>Ready to Try It?</h2>
+        <p>Enter a property's details now and get your instant AI-powered price estimate.</p>
+        <a href="/" class="cta-btn">
+            <iconify-icon icon="ph:house" width="18"></iconify-icon>
+            Go to Predictor
+        </a>
+    </div>
+
+</div>
+{% endblock %}

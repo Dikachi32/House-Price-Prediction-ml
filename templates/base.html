@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}PropertyVal{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --primary: #1a5f4a;
+            --primary-hover: #144d3b;
+            --primary-light: #e8f5f0;
+            --primary-mid: #2d8a6e;
+            --accent: #f0c040;
+            --text-primary: #1f2937;
+            --text-secondary: #6b7280;
+            --border: #e5e7eb;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ── NAVBAR ── */
+        .navbar {
+            background: var(--card);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(8px);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: 'Syne', sans-serif;
+            font-weight: 800;
+            font-size: 1.3rem;
+            color: var(--primary);
+            text-decoration: none;
+            letter-spacing: -0.02em;
+        }
+
+        .logo svg { width: 28px; height: 28px; }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: color 0.2s;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width 0.25s ease;
+            border-radius: 2px;
+        }
+
+        .nav-links a:hover { color: var(--primary); }
+        .nav-links a:hover::after { width: 100%; }
+        .nav-links a.active { color: var(--primary); font-weight: 600; }
+        .nav-links a.active::after { width: 100%; }
+
+        /* Hamburger */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            padding: 6px;
+            background: none;
+            border: none;
+        }
+        .hamburger span {
+            display: block;
+            width: 22px;
+            height: 2px;
+            background: var(--text-primary);
+            border-radius: 2px;
+            transition: all 0.3s;
+        }
+
+        /* ── FOOTER ── */
+        .footer {
+            background: #0f2e22;
+            color: #9db8ae;
+            padding: 3.5rem 0 2rem;
+            margin-top: auto;
+        }
+
+        .footer-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 3rem;
+            padding-bottom: 2.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .footer-brand .footer-logo {
+            font-family: 'Syne', sans-serif;
+            font-weight: 800;
+            font-size: 1.4rem;
+            color: #fff;
+            text-decoration: none;
+            letter-spacing: -0.02em;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .footer-brand p {
+            font-size: 0.875rem;
+            line-height: 1.7;
+            max-width: 280px;
+            color: #7fa898;
+        }
+
+        .footer-col h4 {
+            font-family: 'Syne', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #fff;
+            margin-bottom: 1.25rem;
+        }
+
+        .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.75rem; }
+
+        .footer-col ul li a {
+            color: #7fa898;
+            text-decoration: none;
+            font-size: 0.875rem;
+            transition: color 0.2s;
+        }
+
+        .footer-col ul li a:hover { color: #fff; }
+
+        /* Social Icons */
+        .social-row {
+            display: flex;
+            gap: 0.875rem;
+            margin-top: 1.5rem;
+        }
+
+        .soc-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            font-size: 1.1rem;
+            transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.25s ease, background 0.25s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .soc-icon::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            opacity: 0;
+            transition: opacity 0.25s;
+        }
+
+        .soc-icon:hover { transform: translateY(-4px) scale(1.08); }
+
+        .soc-icon.github { background: rgba(255,255,255,0.07); color: #cde8df; }
+        .soc-icon.github:hover { background: #fff; color: #0f2e22; box-shadow: 0 8px 20px rgba(255,255,255,0.15); }
+
+        .soc-icon.linkedin { background: rgba(10,102,194,0.2); color: #7fbfff; }
+        .soc-icon.linkedin:hover { background: #0a66c2; color: #fff; box-shadow: 0 8px 20px rgba(10,102,194,0.4); }
+
+        .soc-icon.twitter { background: rgba(255,255,255,0.07); color: #cde8df; }
+        .soc-icon.twitter:hover { background: #000; color: #fff; box-shadow: 0 8px 20px rgba(0,0,0,0.4); }
+
+        .soc-icon.facebook { background: rgba(24,119,242,0.2); color: #7fbfff; }
+        .soc-icon.facebook:hover { background: #1877f2; color: #fff; box-shadow: 0 8px 20px rgba(24,119,242,0.4); }
+
+        /* Pulse animation on load */
+        @keyframes soc-pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(45,138,110,0); }
+            50% { box-shadow: 0 0 0 6px rgba(45,138,110,0.15); }
+        }
+
+        .soc-icon { animation: soc-pulse 3s ease-in-out infinite; }
+        .soc-icon:nth-child(2) { animation-delay: 0.5s; }
+        .soc-icon:nth-child(3) { animation-delay: 1s; }
+        .soc-icon:nth-child(4) { animation-delay: 1.5s; }
+        .soc-icon:hover { animation: none; }
+
+        /* Footer bottom */
+        .footer-bottom {
+            padding-top: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .footer-bottom p {
+            font-size: 0.8125rem;
+            color: #4d7a6a;
+        }
+
+        .footer-bottom .built-by {
+            font-size: 0.8125rem;
+            color: #4d7a6a;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .footer-bottom .built-by span {
+            color: #7fa898;
+            font-weight: 600;
+        }
+
+        .footer-bottom .built-by .heart {
+            color: #e05252;
+            animation: heartbeat 1.4s ease-in-out infinite;
+            display: inline-block;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            14% { transform: scale(1.3); }
+            28% { transform: scale(1); }
+            42% { transform: scale(1.2); }
+            56% { transform: scale(1); }
+        }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 768px) {
+            .hamburger { display: flex; }
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: var(--card);
+                flex-direction: column;
+                gap: 0;
+                border-bottom: 1px solid var(--border);
+                box-shadow: var(--shadow-lg);
+            }
+            .nav-links.open { display: flex; }
+            .nav-links li { border-bottom: 1px solid var(--border); }
+            .nav-links a { display: block; padding: 1rem 1.5rem; }
+            .nav-links a::after { display: none; }
+
+            .footer-grid { grid-template-columns: 1fr; gap: 2rem; }
+            .footer-bottom { flex-direction: column; text-align: center; }
+        }
+    </style>
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+
+<!-- ── NAVBAR ── -->
+<nav class="navbar">
+    <div class="nav-container">
+        <a href="/" class="logo">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+            </svg>
+            PropertyVal
+        </a>
+        <button class="hamburger" id="hamburger" aria-label="Menu">
+            <span></span><span></span><span></span>
+        </button>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="/" class="{% if active == 'home' %}active{% endif %}">Home</a></li>
+            <li><a href="/how-it-works" class="{% if active == 'how' %}active{% endif %}">How It Works</a></li>
+            <li><a href="/about-model" class="{% if active == 'model' %}active{% endif %}">About Model</a></li>
+            <li><a href="/contact" class="{% if active == 'contact' %}active{% endif %}">Contact</a></li>
+        </ul>
+    </div>
+</nav>
+
+<!-- ── PAGE CONTENT ── -->
+<main style="flex:1;">
+{% block content %}{% endblock %}
+</main>
+
+<!-- ── FOOTER ── -->
+<footer class="footer">
+    <div class="footer-inner">
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <a href="/" class="footer-logo">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                        <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                    </svg>
+                    PropertyVal
+                </a>
+                <p>An AI-powered house price estimator built on real market data. Fast, accurate, and completely free to use.</p>
+                <div class="social-row">
+                    <a href="https://github.com/Dikachi32" target="_blank" class="soc-icon github" aria-label="GitHub">
+                        <iconify-icon icon="ph:github-logo" width="20"></iconify-icon>
+                    </a>
+                    <a href="https://www.linkedin.com/in/dikachi-baron-a4a380356?utm_source=share_via&utm_content=profile&utm_medium=member_android" target="_blank" class="soc-icon linkedin" aria-label="LinkedIn">
+                        <iconify-icon icon="ph:linkedin-logo" width="20"></iconify-icon>
+                    </a>
+                    <a href="https://x.com/Baron_dikachi" target="_blank" class="soc-icon twitter" aria-label="Twitter / X">
+                        <iconify-icon icon="ph:x-logo" width="20"></iconify-icon>
+                    </a>
+                    <a href="https://www.facebook.com/share/18H6wLY1fW/" target="_blank" class="soc-icon facebook" aria-label="Facebook">
+                        <iconify-icon icon="ph:facebook-logo" width="20"></iconify-icon>
+                    </a>
+                </div>
+            </div>
+
+            <div class="footer-col">
+                <h4>Navigate</h4>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/how-it-works">How It Works</a></li>
+                    <li><a href="/about-model">About Model</a></li>
+                    <li><a href="/contact">Contact</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4>Resources</h4>
+                <ul>
+                    <li><a href="/about-model">Model Details</a></li>
+                    <li><a href="https://github.com/Dikachi32" target="_blank">Source Code</a></li>
+                    <li><a href="/contact">Report a Bug</a></li>
+                    <li><a href="/contact">Partner With Us</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2026 PropertyVal &mdash; ML-Powered House Price Estimation</p>
+            <div class="built-by">
+                Built with <span class="heart">♥</span> by <span>Dikachi Baron</span>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script>
+    const ham = document.getElementById('hamburger');
+    const nav = document.getElementById('navLinks');
+    if (ham) ham.addEventListener('click', () => nav.classList.toggle('open'));
+</script>
+
+{% block extra_scripts %}{% endblock %}
+</body>
+</html>
